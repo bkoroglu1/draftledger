@@ -305,8 +305,6 @@ Bug reports, feature proposals and pull requests are welcome. Start with
 [CONTRIBUTING.md](CONTRIBUTING.md) — it covers the development setup, the test
 gate that CI enforces, and the design constraints a change has to respect.
 
-Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
-
 ## Security
 
 Found a vulnerability? **Please do not open a public issue.** Report it
