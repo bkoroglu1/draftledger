@@ -89,7 +89,7 @@ jobs:
       - run: npm run db:seed
       # playwright.config.ts builds and starts the app itself via `webServer`.
       - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
