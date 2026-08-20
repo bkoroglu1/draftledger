@@ -34,6 +34,3 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
-
-# Local agent/editor state that is specific to one machine
-.claude/settings.local.json
