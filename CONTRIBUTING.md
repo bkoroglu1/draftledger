@@ -15,7 +15,7 @@ a vulnerability — **do not open a public issue for it.**
 
 ## Getting set up
 
-You need Node.js 22.9 or newer and a PostgreSQL 16+ database.
+You need Node.js 22.12 or newer and a PostgreSQL 16+ database.
 
 ```bash
 cp .env.example .env.local

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/bkoroglu1/draftledger/actions/workflows/ci.yml/badge.svg)](https://github.com/bkoroglu1/draftledger/actions/workflows/ci.yml)
 [![Licence: AGPL v3](https://img.shields.io/badge/licence-AGPL--3.0-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D22.9-brightgreen.svg)](package.json)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen.svg)](package.json)
 
 Self-hosted platform for writing, reviewing, publishing and reading an
 organization's own RFC-style technical standards.
