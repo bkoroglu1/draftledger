@@ -1,0 +1,106 @@
+name: draftledger
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: draftledger
+      POSTGRES_PASSWORD: draftledger
+      POSTGRES_DB: draftledger
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U draftledger -d draftledger"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    ports:
+      - "5432:5432"
+
+  migrate:
+    build:
+      context: .
+    command: ["node", "--experimental-strip-types", "scripts/migrate-and-seed.ts"]
+    environment:
+      DATABASE_URL: postgresql://draftledger:draftledger@db:5432/draftledger
+      ARTIFACT_DIR: /data/artifacts
+      SEED_ON_BOOT: "true"
+    volumes:
+      - artifacts:/data/artifacts
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  web:
+    build:
+      context: .
+    command: ["node", "server.js"]
+    environment:
+      APP_BASE_URL: http://localhost:3000
+      APP_BRAND_NAME: ${APP_BRAND_NAME:-Standards Vault}
+      APP_ORG_NAME: ${APP_ORG_NAME:-Example Organization}
+      DOCUMENT_NAMESPACE: ${DOCUMENT_NAMESPACE:-ORG-RFC}
+      DATABASE_URL: postgresql://draftledger:draftledger@db:5432/draftledger
+      ARTIFACT_STORAGE: local
+      ARTIFACT_DIR: /data/artifacts
+      SESSION_SECRET: ${SESSION_SECRET:-dev-only-session-secret-change-me-0000000000}
+      ADMIN_SYNC_TOKEN: ${ADMIN_SYNC_TOKEN:-dev-only-sync-token}
+      EXTERNAL_IMPORT_ENABLED: ${EXTERNAL_IMPORT_ENABLED:-false}
+      SYNC_MODE: ${SYNC_MODE:-disabled}
+      BUG_REPORT_URL: ${BUG_REPORT_URL:-https://example.invalid/draftledger/issues}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - artifacts:/data/artifacts
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  worker:
+    build:
+      context: .
+    command: ["node", "--experimental-strip-types", "src/jobs/worker-entry.ts"]
+    environment:
+      APP_BASE_URL: http://web:3000
+      APP_BRAND_NAME: ${APP_BRAND_NAME:-Standards Vault}
+      DOCUMENT_NAMESPACE: ${DOCUMENT_NAMESPACE:-ORG-RFC}
+      DATABASE_URL: postgresql://draftledger:draftledger@db:5432/draftledger
+      ARTIFACT_STORAGE: local
+      ARTIFACT_DIR: /data/artifacts
+      SESSION_SECRET: ${SESSION_SECRET:-dev-only-session-secret-change-me-0000000000}
+      EXTERNAL_IMPORT_ENABLED: ${EXTERNAL_IMPORT_ENABLED:-false}
+      SYNC_MODE: ${SYNC_MODE:-disabled}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      WORKER_CONCURRENCY: "2"
+    volumes:
+      - artifacts:/data/artifacts
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  db-data:
+  artifacts:

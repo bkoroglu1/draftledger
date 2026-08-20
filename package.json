@@ -1,0 +1,78 @@
+{
+  "name": "draftledger",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DraftLedger — self-hosted RFC-style standards authoring, review, publication and reading platform",
+  "license": "AGPL-3.0-only",
+  "author": "bkoroglu1 (https://github.com/bkoroglu1)",
+  "homepage": "https://github.com/bkoroglu1/draftledger#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bkoroglu1/draftledger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bkoroglu1/draftledger/issues"
+  },
+  "keywords": [
+    "standards",
+    "rfc",
+    "technical-writing",
+    "document-management",
+    "self-hosted",
+    "authoring",
+    "review",
+    "publishing"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "imports": {
+    "#src/*": "./src/*",
+    "#seed/*": "./seed/*"
+  },
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "worker": "node --experimental-strip-types src/jobs/worker-entry.ts",
+    "db:migrate": "node --experimental-strip-types scripts/migrate.ts",
+    "db:seed": "node --experimental-strip-types scripts/seed.ts",
+    "db:reset": "node --experimental-strip-types scripts/reset.ts",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test",
+    "verify": "npm run typecheck && npm run lint && npm run test"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "next": "^16.3.1",
+    "nodemailer": "^9.0.5",
+    "pg": "^8.23.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^24.13.3",
+    "@types/nodemailer": "^8.0.1",
+    "@types/pg": "^8.15.6",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.3.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true
+  }
+}

@@ -1,0 +1,38 @@
+name: Feature request
+description: Suggest a capability or a change in behaviour
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: >
+        Describe the situation you are actually in, not the solution you have in
+        mind. Proposals grounded in a real workflow are much easier to evaluate.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like it to do?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What have you tried or considered instead?
+    validations:
+      required: false
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Project constraints
+      description: >
+        DraftLedger keeps published records immutable, works with no internet
+        connection, and never performs destructive actions without an explicit
+        opt-in. Please confirm your proposal fits within these.
+      options:
+        - label: This does not require published revisions or audit entries to be rewritten
+          required: true
+        - label: This does not require the application to reach the internet to function
+          required: true

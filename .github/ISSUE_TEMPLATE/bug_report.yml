@@ -1,0 +1,66 @@
+name: Bug report
+description: Something behaves differently from what the documentation says
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not use this form for security vulnerabilities.**
+        Report those privately — see [SECURITY.md](../blob/main/SECURITY.md).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you observe, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: >
+        The smallest sequence of actions that triggers it. If a specific
+        document triggers it, the shortest source that still reproduces the
+        problem is the most useful thing you can attach.
+      placeholder: |
+        1. Sign in as ...
+        2. Open ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v0.1.0, or the commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How is it running?
+      options:
+        - Docker Compose
+        - Local development (npm run dev)
+        - Production build (npm run build && npm run start)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Node version, PostgreSQL version, browser if it is a UI issue.
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: >
+        Server or browser console output. **Redact secrets** — session values,
+        `SESSION_SECRET`, `ADMIN_SYNC_TOKEN`, database URLs and invite or reset
+        tokens.
+      render: shell
+    validations:
+      required: false

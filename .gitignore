@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Local environment. `.env.example` is the documented template; `.env.test`
+# holds throwaway values the test suite and CI both read, so both are tracked.
+.env
+.env.local
+.env.*.local
+
+# Runtime data — artifacts and uploads written by the running application
+data/
+
+# Test output
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.playwright/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Editor and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Local agent/editor state that is specific to one machine
+.claude/settings.local.json

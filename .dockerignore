@@ -1,0 +1,36 @@
+# Build context hygiene. Without this, `COPY . .` in the builder stage drops the
+# host's macOS node_modules (darwin-arm64 native binaries) over the alpine ones
+# installed by the deps stage, and local .env files leak into the image where
+# Next would load them ahead of the compose environment.
+
+node_modules
+.next
+out
+
+# Local environment — the image must take its configuration from compose.
+.env
+.env.local
+.env.*.local
+.env.test
+
+# Local artifact volume; the container mounts its own.
+data
+
+.git
+.gitignore
+.github
+
+# Test and tooling output
+test-results
+playwright-report
+coverage
+tsconfig.tsbuildinfo
+*.log
+npm-debug.log*
+
+# Documentation assets are not served by the app.
+docs/screenshots
+
+.DS_Store
+.vscode
+.idea

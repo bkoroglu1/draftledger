@@ -1,0 +1,948 @@
+/* ==========================================================================
+   DraftLedger — global design tokens and layout.
+   Self-contained: system font stacks only, no CDN or webfont download.
+   ========================================================================== */
+
+:root {
+  /* Light theme (default) */
+  --dl-bg: #ffffff;
+  --dl-fg: #212529;
+  --dl-muted: #6c757d;
+  --dl-subtle: #f8f9fa;
+  --dl-border: #dee2e6;
+  --dl-border-strong: #adb5bd;
+  --dl-link: #0d6efd;
+  --dl-link-visited: #6f42c1;
+  --dl-accent: #0d6efd;
+  --dl-accent-fg: #ffffff;
+  --dl-focus: #0a58ca;
+  --dl-code-bg: #f1f3f5;
+
+  --dl-state-editing: #6c757d;
+  --dl-state-review: #0d6efd;
+  --dl-state-changes: #d63384;
+  --dl-state-approved: #198754;
+  --dl-state-published: #0f5132;
+  --dl-state-superseded: #7a5c00;
+  --dl-state-withdrawn: #842029;
+
+  --dl-diff-add-bg: #d1e7dd;
+  --dl-diff-add-fg: #0a3622;
+  --dl-diff-del-bg: #f8d7da;
+  --dl-diff-del-fg: #58151c;
+  --dl-diff-changed: #ffc107;
+
+  /* Reader geometry — matches the reference layout measurements. */
+  --dl-page-width: 768px;
+  --dl-sidebar-width: clamp(300px, 24.6875vw, 340px);
+  --dl-reader-font-size: 12pt;
+
+  --dl-mono: 'Noto Sans Mono', 'DejaVu Sans Mono', 'Liberation Mono', ui-monospace,
+    SFMono-Regular, Menlo, Consolas, monospace;
+  --dl-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --dl-bg: #212529;
+    --dl-fg: #dee2e6;
+    --dl-muted: #adb5bd;
+    --dl-subtle: #2b3035;
+    --dl-border: #495057;
+    --dl-border-strong: #6c757d;
+    --dl-link: #6ea8fe;
+    --dl-link-visited: #c29ffa;
+    --dl-accent: #3d8bfd;
+    --dl-accent-fg: #ffffff;
+    --dl-focus: #9ec5fe;
+    --dl-code-bg: #2b3035;
+
+    --dl-state-editing: #adb5bd;
+    --dl-state-review: #6ea8fe;
+    --dl-state-changes: #e685b5;
+    --dl-state-approved: #75b798;
+    --dl-state-published: #a3cfbb;
+    --dl-state-superseded: #ffda6a;
+    --dl-state-withdrawn: #ea868f;
+
+    --dl-diff-add-bg: #0f5132;
+    --dl-diff-add-fg: #d1e7dd;
+    --dl-diff-del-bg: #58151c;
+    --dl-diff-del-fg: #f8d7da;
+    --dl-diff-changed: #ffda6a;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --dl-bg: #212529;
+  --dl-fg: #dee2e6;
+  --dl-muted: #adb5bd;
+  --dl-subtle: #2b3035;
+  --dl-border: #495057;
+  --dl-border-strong: #6c757d;
+  --dl-link: #6ea8fe;
+  --dl-link-visited: #c29ffa;
+  --dl-accent: #3d8bfd;
+  --dl-accent-fg: #ffffff;
+  --dl-focus: #9ec5fe;
+  --dl-code-bg: #2b3035;
+
+  --dl-state-editing: #adb5bd;
+  --dl-state-review: #6ea8fe;
+  --dl-state-changes: #e685b5;
+  --dl-state-approved: #75b798;
+  --dl-state-published: #a3cfbb;
+  --dl-state-superseded: #ffda6a;
+  --dl-state-withdrawn: #ea868f;
+
+  --dl-diff-add-bg: #0f5132;
+  --dl-diff-add-fg: #d1e7dd;
+  --dl-diff-del-bg: #58151c;
+  --dl-diff-del-fg: #f8d7da;
+  --dl-diff-changed: #ffda6a;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--dl-bg);
+  color: var(--dl-fg);
+  font-family: var(--dl-sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--dl-link);
+}
+a:visited {
+  color: var(--dl-link-visited);
+}
+
+:focus-visible {
+  outline: 2px solid var(--dl-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.dl-sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dl-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--dl-accent);
+  color: var(--dl-accent-fg);
+  padding: 0.5rem 1rem;
+}
+.dl-skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+/* ==========================================================================
+   Reader
+   ========================================================================== */
+
+.dl-reader {
+  min-height: 100vh;
+}
+
+.dl-reader-main {
+  padding: 1rem 0 4rem;
+  transition: padding-inline-end 120ms ease;
+}
+.dl-reader[data-sidebar='open'] .dl-reader-main {
+  padding-inline-end: var(--dl-sidebar-width);
+}
+
+.dl-pages {
+  /* The page block itself must measure --dl-page-width; padding sits outside.
+     Capped at the available width so a narrow screen scrolls the page block
+     horizontally instead of widening the whole document — that would push the
+     fixed toolbar out of reach. */
+  max-width: min(calc(var(--dl-page-width) + 2rem), 100%);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.dl-page {
+  font-family: var(--dl-mono);
+  font-size: var(--dl-reader-font-size);
+  line-height: 1.35;
+  white-space: pre;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  overflow-x: auto;
+  tab-size: 8;
+  color: var(--dl-fg);
+  background: transparent;
+  scroll-margin-top: 1rem;
+}
+.dl-page-header,
+.dl-page-footer {
+  color: var(--dl-muted);
+}
+.dl-heading {
+  font-weight: 700;
+  scroll-margin-top: 1rem;
+}
+.dl-page + .dl-page {
+  border-top: 1px dashed var(--dl-border);
+  padding-top: 1.5rem;
+}
+.dl-link-unresolved {
+  text-decoration-style: dashed;
+}
+
+.dl-toolbar {
+  position: fixed;
+  top: 0.5rem;
+  right: 0.75rem;
+  /* Above the document, which can scroll horizontally underneath it. */
+  z-index: 60;
+  display: flex;
+  gap: 0.5rem;
+  /* Opaque so the monospace text never shows through the controls. */
+  background: var(--dl-bg);
+  border-radius: 6px;
+  padding: 2px;
+  box-shadow: 0 0 0 1px var(--dl-border);
+}
+.dl-reader[data-sidebar='open'] .dl-toolbar {
+  right: calc(var(--dl-sidebar-width) + 0.75rem);
+}
+
+.dl-button {
+  font: inherit;
+  font-size: 0.8125rem;
+  background: var(--dl-subtle);
+  color: var(--dl-fg);
+  border: 1px solid var(--dl-border);
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.dl-button:hover {
+  border-color: var(--dl-border-strong);
+}
+.dl-button[aria-pressed='true'] {
+  background: var(--dl-accent);
+  color: var(--dl-accent-fg);
+  border-color: var(--dl-accent);
+}
+.dl-button-primary {
+  background: var(--dl-accent);
+  color: var(--dl-accent-fg);
+  border-color: var(--dl-accent);
+}
+.dl-button-danger {
+  border-color: var(--dl-state-withdrawn);
+  color: var(--dl-state-withdrawn);
+}
+
+.dl-menu {
+  position: relative;
+}
+.dl-menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  min-width: 9rem;
+  background: var(--dl-bg);
+  border: 1px solid var(--dl-border);
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+  padding: 0.25rem;
+  margin: 0;
+  list-style: none;
+  z-index: 40;
+}
+.dl-menu-list button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 0.8125rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.dl-menu-list button:hover,
+.dl-menu-list button[aria-checked='true'] {
+  background: var(--dl-subtle);
+}
+
+/* Metadata sidebar */
+.dl-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--dl-sidebar-width);
+  border-left: 1px solid var(--dl-border);
+  background: var(--dl-bg);
+  display: flex;
+  flex-direction: column;
+  z-index: 25;
+}
+.dl-sidebar-header {
+  padding: 0.75rem 0.75rem 0;
+  border-bottom: 1px solid var(--dl-border);
+  flex: 0 0 auto;
+}
+.dl-sidebar-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.dl-badge {
+  background: var(--dl-accent);
+  color: var(--dl-accent-fg);
+  border-radius: 3px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.dl-doc-id {
+  font-family: var(--dl-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.dl-status-chip {
+  font-size: 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+  white-space: nowrap;
+}
+.dl-status-chip::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+}
+.dl-state-drafting { color: var(--dl-state-editing); }
+.dl-state-review { color: var(--dl-state-review); }
+.dl-state-changes-requested { color: var(--dl-state-changes); }
+.dl-state-approved { color: var(--dl-state-approved); }
+.dl-state-publishing { color: var(--dl-state-review); }
+.dl-state-published { color: var(--dl-state-published); }
+.dl-state-superseded { color: var(--dl-state-superseded); }
+.dl-state-withdrawn,
+.dl-state-historic { color: var(--dl-state-withdrawn); }
+
+.dl-tablist {
+  display: flex;
+  gap: 0;
+  margin-top: 0.5rem;
+}
+.dl-tab {
+  flex: 1;
+  font: inherit;
+  font-size: 0.8125rem;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--dl-muted);
+  padding: 0.4rem 0.25rem;
+  cursor: pointer;
+}
+.dl-tab[aria-selected='true'] {
+  color: var(--dl-fg);
+  border-bottom-color: var(--dl-accent);
+  font-weight: 600;
+}
+.dl-sidebar-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.dl-info-row {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0.35rem 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--dl-border);
+}
+.dl-info-row dt {
+  color: var(--dl-muted);
+  margin: 0;
+}
+.dl-info-row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.dl-info-list {
+  margin: 0;
+  padding: 0;
+}
+.dl-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.dl-chip {
+  font-family: var(--dl-mono);
+  font-size: 0.75rem;
+  border: 1px solid var(--dl-border);
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+  text-decoration: none;
+  color: var(--dl-fg);
+  background: var(--dl-subtle);
+}
+.dl-chip[aria-current='true'] {
+  border-color: var(--dl-accent);
+  color: var(--dl-accent);
+  font-weight: 600;
+}
+
+.dl-contents-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dl-contents-tree a {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.15rem 0.25rem;
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--dl-fg);
+  line-height: 1.35;
+}
+.dl-contents-tree a:hover {
+  background: var(--dl-subtle);
+}
+.dl-contents-tree a[aria-current='true'] {
+  background: var(--dl-subtle);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--dl-accent);
+}
+.dl-contents-number {
+  font-family: var(--dl-mono);
+  color: var(--dl-muted);
+  flex: 0 0 auto;
+}
+.dl-contents-title {
+  flex: 1 1 auto;
+}
+
+.dl-pref {
+  margin-bottom: 1rem;
+}
+.dl-pref > label,
+.dl-pref > .dl-pref-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.dl-pref select,
+.dl-pref input[type='range'] {
+  width: 100%;
+  font: inherit;
+  font-size: 0.8125rem;
+  background: var(--dl-bg);
+  color: var(--dl-fg);
+  border: 1px solid var(--dl-border);
+  border-radius: 3px;
+  padding: 0.25rem;
+}
+.dl-pref-hint {
+  color: var(--dl-muted);
+  font-size: 0.75rem;
+  margin: 0.25rem 0 0;
+}
+
+/* Mobile drawer */
+.dl-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 45%);
+  z-index: 24;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  /* The fixed-width page block must scroll inside its own <pre>, never widen
+     the document: a layout viewport wider than the visual one would push the
+     drawer and the floating controls off-screen. */
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .dl-reader-main {
+    /* Keep the first lines clear of the floating controls on narrow screens. */
+    padding-top: 3rem;
+  }
+  .dl-pages {
+    padding: 0 0.5rem;
+  }
+  .dl-reader[data-sidebar='open'] .dl-reader-main {
+    padding-inline-end: 0;
+  }
+  .dl-sidebar {
+    width: min(92vw, 360px);
+    box-shadow: -8px 0 24px rgb(0 0 0 / 30%);
+  }
+  /* On phones the page block is wider than the screen, so the layout viewport
+     can exceed the visual one. A viewport-fixed toolbar drifts off-screen in
+     that situation; sticking it to the top of the flow keeps the theme and
+     panel controls reachable at all times. */
+  .dl-toolbar,
+  .dl-reader[data-sidebar='open'] .dl-toolbar {
+    position: sticky;
+    top: 0.5rem;
+    right: auto;
+    margin: 0 0.5rem 0 auto;
+    width: max-content;
+  }
+  .dl-reader-main {
+    padding-top: 0.5rem;
+  }
+}
+
+/* ==========================================================================
+   Application chrome (non-reader screens)
+   ========================================================================== */
+
+.dl-app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 4rem;
+}
+.dl-appbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--dl-border);
+  padding: 0.6rem 1.25rem;
+  position: sticky;
+  top: 0;
+  background: var(--dl-bg);
+  z-index: 20;
+}
+.dl-appbar nav {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+}
+.dl-appbar-spacer {
+  flex: 1 1 auto;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+}
+.dl-page-title {
+  margin: 1rem 0 0.25rem;
+  font-size: 1.5rem;
+}
+.dl-page-subtitle {
+  color: var(--dl-muted);
+  font-family: var(--dl-mono);
+  margin: 0 0 1rem;
+}
+
+.dl-card {
+  border: 1px solid var(--dl-border);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--dl-bg);
+}
+.dl-card h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.dl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.dl-table th,
+.dl-table td {
+  border-bottom: 1px solid var(--dl-border);
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+.dl-table th {
+  color: var(--dl-muted);
+  font-weight: 600;
+}
+.dl-table-scroll {
+  overflow-x: auto;
+}
+
+.dl-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem 1rem;
+}
+label.dl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+.dl-field input,
+.dl-field select,
+.dl-field textarea {
+  font: inherit;
+  font-size: 0.875rem;
+  background: var(--dl-bg);
+  color: var(--dl-fg);
+  border: 1px solid var(--dl-border);
+  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+}
+.dl-field textarea {
+  font-family: var(--dl-mono);
+  min-height: 6rem;
+}
+.dl-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.dl-error {
+  border: 1px solid var(--dl-state-withdrawn);
+  color: var(--dl-state-withdrawn);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+.dl-notice {
+  border: 1px solid var(--dl-border);
+  background: var(--dl-subtle);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+.dl-muted {
+  color: var(--dl-muted);
+}
+.dl-mono {
+  font-family: var(--dl-mono);
+}
+
+/* Tabs on document detail */
+.dl-doctabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--dl-border);
+  margin: 1rem 0;
+}
+.dl-doctab {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  text-decoration: none;
+  color: var(--dl-muted);
+  font-size: 0.9rem;
+}
+.dl-doctab[aria-selected='true'] {
+  color: var(--dl-fg);
+  border-color: var(--dl-border);
+  background: var(--dl-subtle);
+  font-weight: 600;
+}
+
+/* Timeline */
+.dl-timeline {
+  overflow-x: auto;
+  border: 1px solid var(--dl-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+.dl-timeline-grid {
+  min-width: 720px;
+}
+.dl-timeline-row {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.dl-timeline-label {
+  font-family: var(--dl-mono);
+  font-size: 0.8125rem;
+  position: sticky;
+  left: 0;
+  background: var(--dl-bg);
+}
+.dl-timeline-track {
+  position: relative;
+  height: 2.25rem;
+  border: 1px solid var(--dl-border);
+  border-radius: 4px;
+  background: var(--dl-subtle);
+}
+.dl-timeline-seg {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  background: color-mix(in srgb, currentColor 22%, transparent);
+  color: var(--dl-state-editing);
+  font-size: 0.75rem;
+  font-family: var(--dl-mono);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 1.25rem;
+}
+.dl-timeline-seg[data-current='true'] {
+  box-shadow: 0 0 0 2px var(--dl-accent);
+}
+.dl-timeline-seg[data-state='published'] { color: var(--dl-state-published); }
+.dl-timeline-seg[data-state='review'] { color: var(--dl-state-review); }
+.dl-timeline-seg[data-state='changes-requested'] { color: var(--dl-state-changes); }
+.dl-timeline-seg[data-state='approved'] { color: var(--dl-state-approved); }
+.dl-timeline-seg[data-state='superseded'] { color: var(--dl-state-superseded); }
+.dl-timeline-seg[data-state='withdrawn'] { color: var(--dl-state-withdrawn); }
+.dl-timeline-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--dl-muted);
+  margin-left: 12.5rem;
+}
+.dl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+.dl-legend span {
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0.05rem 0.4rem;
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+
+/* Diff */
+.dl-diff {
+  font-family: var(--dl-mono);
+  font-size: 0.8125rem;
+  border: 1px solid var(--dl-border);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.dl-diff table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.dl-diff td {
+  padding: 0 0.5rem;
+  white-space: pre;
+  vertical-align: top;
+}
+.dl-diff .dl-lineno {
+  color: var(--dl-muted);
+  text-align: right;
+  user-select: none;
+  width: 3.5rem;
+  border-right: 1px solid var(--dl-border);
+}
+.dl-diff tr[data-type='insert'] td { background: var(--dl-diff-add-bg); color: var(--dl-diff-add-fg); }
+.dl-diff tr[data-type='delete'] td { background: var(--dl-diff-del-bg); color: var(--dl-diff-del-fg); }
+.dl-diff ins { text-decoration: none; background: var(--dl-diff-add-bg); color: var(--dl-diff-add-fg); }
+.dl-diff del { text-decoration: none; background: var(--dl-diff-del-bg); color: var(--dl-diff-del-fg); }
+.dl-diff .dl-marker {
+  width: 1.5rem;
+  text-align: center;
+  color: var(--dl-muted);
+  border-right: 2px solid transparent;
+}
+.dl-diff tr[data-marker='changed'] .dl-marker { border-right-color: var(--dl-diff-changed); }
+.dl-diff tr[data-marker='added'] .dl-marker { border-right-color: var(--dl-diff-add-fg); }
+.dl-diff tr[data-marker='removed'] .dl-marker { border-right-color: var(--dl-diff-del-fg); }
+.dl-diff-hunk-header {
+  background: var(--dl-subtle);
+  color: var(--dl-muted);
+  padding: 0.2rem 0.5rem;
+}
+
+/* Editor */
+.dl-editor-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 1023px) {
+  .dl-editor-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.dl-editor-source {
+  font-family: var(--dl-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  min-height: 60vh;
+  width: 100%;
+  background: var(--dl-bg);
+  color: var(--dl-fg);
+  border: 1px solid var(--dl-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  tab-size: 2;
+  resize: vertical;
+}
+.dl-preview {
+  border: 1px solid var(--dl-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  max-height: 70vh;
+  overflow: auto;
+}
+.dl-diagnostic {
+  border-left: 3px solid var(--dl-border);
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.8125rem;
+}
+.dl-diagnostic[data-severity='error'] { border-left-color: var(--dl-state-withdrawn); }
+.dl-diagnostic[data-severity='warning'] { border-left-color: var(--dl-state-superseded); }
+.dl-diagnostic[data-severity='info'] { border-left-color: var(--dl-state-review); }
+
+.dl-thread {
+  border: 1px solid var(--dl-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.dl-thread[data-status='resolved'] { opacity: 0.72; }
+.dl-thread[data-type='blocking'] { border-left: 3px solid var(--dl-state-changes); }
+.dl-comment {
+  border-top: 1px solid var(--dl-border);
+  padding-top: 0.4rem;
+  margin-top: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.dl-gate {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--dl-border);
+  padding: 0.5rem 0;
+}
+.dl-gate[data-satisfied='true'] .dl-gate-mark { color: var(--dl-state-approved); }
+.dl-gate[data-satisfied='false'] .dl-gate-mark { color: var(--dl-state-changes); }
+.dl-gate-mark { font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Print — the panel and floating controls never appear on paper.
+   ========================================================================== */
+@media print {
+  .dl-sidebar,
+  .dl-toolbar,
+  .dl-backdrop,
+  .dl-appbar,
+  .dl-skip-link,
+  .dl-no-print {
+    display: none !important;
+  }
+  .dl-reader-main,
+  .dl-reader[data-sidebar='open'] .dl-reader-main {
+    padding: 0 !important;
+  }
+  .dl-page {
+    break-after: page;
+    overflow: visible;
+  }
+  .dl-timeline {
+    overflow: visible;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
+
+.dl-secret {
+  border: 1px solid var(--dl-accent);
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.dl-secret-value {
+  display: block;
+  word-break: break-all;
+  background: var(--dl-code-bg);
+  border: 1px solid var(--dl-border);
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
