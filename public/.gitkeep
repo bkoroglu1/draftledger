@@ -1,0 +1,3 @@
+# Next.js serves this directory at the site root. It is empty in the upstream
+# project, but git does not track empty directories and the Dockerfile copies
+# it, so this placeholder keeps the image build working on a fresh clone.
