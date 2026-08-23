@@ -171,3 +171,41 @@ describe('rfcxml parser', () => {
     expect(diagnostic?.column).toBeGreaterThan(0);
   });
 });
+
+describe('definition list continuation', () => {
+  const source = `# Requirements
+
+R-21:
+: Her faz sonunda ilgili doğrulama komutu çalıştırılmalı ve çıktısı kayıt altına
+  alınmalıdır (MUST). Doğrulama komutları burada.
+
+R-22:
+: Faz 3 sonunda boş dönmeli.
+`;
+
+  function deflistOf(md: string) {
+    const parsed = parseMarkdown(md);
+    const blocks = flattenSections(parsed.sections).flatMap((s) => s.blocks);
+    return blocks.find((b) => b.kind === 'deflist');
+  }
+
+  it('folds an indented continuation line into the definition it follows', () => {
+    const list = deflistOf(source);
+    expect(list).toBeDefined();
+    const item = list!.items[0]!;
+    expect(item.term).toBe('R-21:');
+
+    // The whole sentence has to live in one paragraph. Before this was fixed
+    // the body stopped at "kayıt altına" and the remainder escaped the list as
+    // a separate block at the outer indent.
+    const text = JSON.stringify(item.blocks);
+    expect(text).toContain('kayıt altına');
+    expect(text).toContain('alınmalıdır');
+    expect(item.blocks).toHaveLength(1);
+  });
+
+  it('keeps later terms in the same list rather than starting a new block', () => {
+    const list = deflistOf(source);
+    expect(list!.items.map((i) => i.term)).toEqual(['R-21:', 'R-22:']);
+  });
+});

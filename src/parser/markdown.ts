@@ -358,6 +358,21 @@ export function parseBlocks(lines: string[], startLine: number, diagnostics: Dia
         while (k < lines.length && /^\s*: /.test(lines[k]!)) {
           defLines.push(lines[k]!.replace(/^\s*: /, ''));
           k += 1;
+          // Lazy continuation. An indented, non-blank line that does not open
+          // another definition belongs to the one just read. Without this the
+          // body ends at the first newline and the rest of the sentence
+          // reappears as a separate paragraph at the outer indent.
+          const cont: string[] = [];
+          while (k < lines.length && /^\s+\S/.test(lines[k]!) && !/^\s*: /.test(lines[k]!)) {
+            cont.push(lines[k]!);
+            k += 1;
+          }
+          if (cont.length) {
+            // Strip the shallowest indentation rather than all of it, so an
+            // artwork block nested inside a definition keeps its shape.
+            const base = Math.min(...cont.map((l) => l.length - l.trimStart().length));
+            for (const c of cont) defLines.push(c.slice(base));
+          }
         }
         items.push({ term, blocks: parseBlocks(defLines, startLine + j, diagnostics) });
         j = k;
