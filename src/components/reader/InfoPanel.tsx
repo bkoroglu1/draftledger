@@ -4,6 +4,8 @@ import type { AuthorView, RelationView } from '#src/services/documents.ts';
 import { CompareControls, type RevisionOption } from './CompareControls.tsx';
 
 export interface InfoPanelProps {
+  /** Supplied by the page so this stays a pure presentational component. */
+  bugReportUrl: string;
   documentSlug: string;
   documentLabel: string;
   documentType: string;
@@ -279,7 +281,7 @@ export function InfoPanel(props: InfoPanelProps) {
       </ul>
 
       <p className="dl-pref-hint" style={{ marginTop: '1rem' }}>
-        <a href={config.app.bugReportUrl} rel="noopener noreferrer nofollow" target="_blank">
+        <a href={props.bugReportUrl} rel="noopener noreferrer nofollow" target="_blank">
           Report a reader bug
         </a>
       </p>

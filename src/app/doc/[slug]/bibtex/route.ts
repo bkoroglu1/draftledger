@@ -3,6 +3,7 @@ import { db } from '#src/db/index.ts';
 import { documentAuthors, people } from '#src/db/schema.ts';
 import { httpStatusFor, isAppError } from '#src/domain/errors.ts';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { renderBibtex } from '#src/render/bibtex.ts';
 import { getActor } from '#src/services/auth.ts';
 import { getDocumentContext } from '#src/services/documents.ts';
@@ -36,7 +37,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       authors: authors.map((a) => a.name),
       year: date.getUTCFullYear(),
       month: MONTHS[date.getUTCMonth()] ?? 'January',
-      organization: config.app.orgName,
+      organization: (await settingValues()).orgName,
       series: context.namespace?.label ?? config.documents.defaultNamespace,
       url: `${config.app.baseUrl}/doc/${doc.slug}`,
       abstract: doc.abstract,

@@ -7,6 +7,7 @@ const TABS = [
   { key: 'templates', label: 'Templates' },
   { key: 'workflows', label: 'Workflows' },
   { key: 'notification-policies', label: 'Notification policies' },
+  { key: 'settings', label: 'Settings' },
 ] as const;
 
 export function AdminNav({ active }: { active: (typeof TABS)[number]['key'] }) {

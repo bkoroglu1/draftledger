@@ -5,6 +5,7 @@ import { db } from '#src/db/index.ts';
 import { iprDisclosures } from '#src/db/schema.ts';
 import { isAppError } from '#src/domain/errors.ts';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { AppBar } from '#src/components/AppBar.tsx';
 import { getActor } from '#src/services/auth.ts';
 import { getDocumentContext } from '#src/services/documents.ts';
@@ -14,6 +15,7 @@ export const dynamic = 'force-dynamic';
 export default async function IprPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const actor = await getActor();
+  const { orgName } = await settingValues();
 
   let context;
   try {
@@ -63,7 +65,7 @@ export default async function IprPage({ params }: { params: Promise<{ slug: stri
         )}
 
         <p className="dl-muted" style={{ fontSize: '0.8125rem' }}>
-          Disclosure policy is configured per installation. {config.app.orgName} owns these records;
+          Disclosure policy is configured per installation. {orgName} owns these records;
           they are not synchronised with any external register.
         </p>
       </div>

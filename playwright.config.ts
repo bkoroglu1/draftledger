@@ -27,6 +27,10 @@ export default defineConfig({
     ? undefined
     : {
         command: 'npm run build && npm run start -- -p 3100',
+        // Pinned so the settings suite always has one environment-managed
+        // field and one editable field on screen, whatever the developer
+        // happens to have in .env.local.
+        env: { APP_BRAND_NAME: 'Standards Vault', APP_ORG_NAME: '' },
         url: `${BASE_URL}/health/live`,
         reuseExistingServer: !process.env.CI,
         timeout: 240_000,

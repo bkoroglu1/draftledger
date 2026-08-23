@@ -1,16 +1,19 @@
 import type { Metadata, Viewport } from 'next';
-import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { PREFS_BOOT_SCRIPT } from '#src/lib/prefs.ts';
 import './globals.css';
 
-export const metadata: Metadata = {
-  title: {
-    default: `${config.app.brandName} — DraftLedger`,
-    template: `%s — ${config.app.brandName}`,
-  },
-  description:
-    'Self-hosted standards authoring, review, publication and reading platform.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { brandName } = await settingValues();
+  return {
+    title: {
+      default: `${brandName} \u2014 DraftLedger`,
+      template: `%s \u2014 ${brandName}`,
+    },
+    description:
+      'Self-hosted standards authoring, review, publication and reading platform.',
+  };
+}
 
 /**
  * Without this, mobile browsers lay the page out at a virtual desktop width and

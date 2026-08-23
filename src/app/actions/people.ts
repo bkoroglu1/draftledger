@@ -7,6 +7,7 @@ import { people } from '#src/db/schema.ts';
 import { isAppError } from '#src/domain/errors.ts';
 import { ORG_ROLE_RANK, type GroupRole, type OrgRole } from '#src/domain/types.ts';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { mailConfigured, sendMail } from '#src/lib/mail.ts';
 import { requireActor } from '#src/services/auth.ts';
 import { recordAudit } from '#src/services/audit.ts';
@@ -167,18 +168,19 @@ export async function issueLinkAction(_prev: State, formData: FormData): Promise
 
     let delivered = false;
     if (deliver === 'email') {
+      const { brandName } = await settingValues();
       const result = await sendMail({
         to: [person.email!],
         subject:
           kind === 'invite'
-            ? `You have been invited to ${config.app.brandName}`
-            : `Reset your ${config.app.brandName} password`,
+            ? `You have been invited to ${brandName}`
+            : `Reset your ${brandName} password`,
         text: [
           `Hello ${person.displayName},`,
           '',
           kind === 'invite'
-            ? `An account has been created for you on ${config.app.brandName}. Set your password here:`
-            : `A password reset was requested for your ${config.app.brandName} account. Set a new password here:`,
+            ? `An account has been created for you on ${brandName}. Set your password here:`
+            : `A password reset was requested for your ${brandName} account. Set a new password here:`,
           '',
           issued.link,
           '',

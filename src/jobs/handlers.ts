@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '#src/db/index.ts';
 import { documents, notificationDeliveries } from '#src/db/schema.ts';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { sendMail } from '#src/lib/mail.ts';
 import { renderAndPersistRevision } from '#src/services/revisions.ts';
 import { executePublish, markPublicationFailed } from '#src/services/publish.ts';
@@ -73,16 +74,17 @@ export const handlers: Record<string, JobHandler> = {
     const addresses = (list: typeof expansion.to) =>
       list.map((r) => r.address).filter((a): a is string => Boolean(a));
 
+    const { brandName } = await settingValues();
     const result = await sendMail({
       to: addresses(expansion.to),
       cc: addresses(expansion.cc),
-      subject: `[${config.app.brandName}] ${expansion.eventLabel}: ${doc.slug}`,
+      subject: `[${brandName}] ${expansion.eventLabel}: ${doc.slug}`,
       text: [
         `${expansion.eventLabel} for ${doc.slug} — ${doc.title}.`,
         '',
         `${config.app.baseUrl.replace(/\/+$/, '')}/doc/${doc.slug}`,
         '',
-        `You are receiving this because of a notification policy in ${config.app.brandName}.`,
+        `You are receiving this because of a notification policy in ${brandName}.`,
       ].join('\n'),
     });
 

@@ -38,8 +38,14 @@ services:
     command: ["node", "server.js"]
     environment:
       APP_BASE_URL: http://localhost:3000
-      APP_BRAND_NAME: ${APP_BRAND_NAME:-Standards Vault}
-      APP_ORG_NAME: ${APP_ORG_NAME:-Example Organization}
+      # Left empty on purpose. These three are editable from Admin > Settings,
+      # and the app treats an empty variable as absent so the stored value is
+      # used. Give one a value here and it becomes authoritative: the admin
+      # screen then shows that field as managed by the environment rather than
+      # accepting an edit the reader would never see.
+      APP_BRAND_NAME: ${APP_BRAND_NAME:-}
+      APP_ORG_NAME: ${APP_ORG_NAME:-}
+      BUG_REPORT_URL: ${BUG_REPORT_URL:-}
       DOCUMENT_NAMESPACE: ${DOCUMENT_NAMESPACE:-ORG-RFC}
       DATABASE_URL: postgresql://draftledger:draftledger@db:5432/draftledger
       ARTIFACT_STORAGE: local
@@ -48,7 +54,6 @@ services:
       ADMIN_SYNC_TOKEN: ${ADMIN_SYNC_TOKEN:-dev-only-sync-token}
       EXTERNAL_IMPORT_ENABLED: ${EXTERNAL_IMPORT_ENABLED:-false}
       SYNC_MODE: ${SYNC_MODE:-disabled}
-      BUG_REPORT_URL: ${BUG_REPORT_URL:-https://example.invalid/draftledger/issues}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_SECURE: ${SMTP_SECURE:-false}
@@ -78,7 +83,9 @@ services:
     command: ["node", "--experimental-strip-types", "src/jobs/worker-entry.ts"]
     environment:
       APP_BASE_URL: http://web:3000
-      APP_BRAND_NAME: ${APP_BRAND_NAME:-Standards Vault}
+      # Must match the web service, otherwise notification mail would be
+      # branded differently from the application that sent it.
+      APP_BRAND_NAME: ${APP_BRAND_NAME:-}
       DOCUMENT_NAMESPACE: ${DOCUMENT_NAMESPACE:-ORG-RFC}
       DATABASE_URL: postgresql://draftledger:draftledger@db:5432/draftledger
       ARTIFACT_STORAGE: local

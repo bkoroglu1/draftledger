@@ -8,6 +8,16 @@ function str(name: string, fallback: string): string {
   return v === undefined || v === '' ? fallback : v;
 }
 
+/**
+ * `str` deliberately treats an empty variable as absent, which means it cannot
+ * answer "did the operator pin this value?". Settings that an administrator can
+ * also edit from the UI need that distinction, so they ask here instead.
+ */
+export function envIsSet(name: string): boolean {
+  const v = process.env[name];
+  return v !== undefined && v !== '';
+}
+
 function bool(name: string, fallback: boolean): boolean {
   const v = process.env[name];
   if (v === undefined || v === '') return fallback;

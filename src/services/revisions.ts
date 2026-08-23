@@ -16,6 +16,7 @@ import { appError } from '#src/domain/errors.ts';
 import { ARTIFACT_MIME, PARSER_VERSION, RENDERER_VERSION, type CanonicalFormat } from '#src/domain/types.ts';
 import { sha256 } from '#src/lib/hash.ts';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { artifactKey, sourceKey, storage } from '#src/lib/storage.ts';
 import { renderRevision, type RenderContext, type RenderResult } from '#src/render/index.ts';
 import { requiredSectionDiagnostics, summarizeDiagnostics, type Diagnostic } from '#src/parser/index.ts';
@@ -146,14 +147,15 @@ export async function buildRenderContext(
     .where(eq(documentRelations.sourceDocumentId, documentId));
 
   const doc = row.document;
+  const resolved = await settingValues();
   return {
     documentNumber: doc.documentNumber ?? doc.slug,
     documentSlug: doc.slug,
     documentType: doc.type === 'standard' ? 'Standards Document' : titleCase(doc.type),
     status: doc.status,
     standardLevel: titleCase(doc.standardLevel.replace(/-/g, ' ')),
-    organization: config.app.orgName,
-    brandName: config.app.brandName,
+    organization: resolved.orgName,
+    brandName: resolved.brandName,
     series: row.namespace?.label ?? config.documents.defaultNamespace,
     date: doc.publishedAt ?? new Date(),
     authors: authorRows.map((a) => ({

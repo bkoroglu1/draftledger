@@ -205,6 +205,29 @@ and can be forked into a local draft. The server only ever contacts the hosts in
 the configured allowlist, and only for references matching a narrow pattern.
 Every local capability keeps working with the adapter switched off.
 
+## Installation settings
+
+Brand name, organization name and the bug report URL are editable at
+**Admin > Settings** without a redeploy. Everything else, including secrets,
+database credentials and upstream hosts, stays in the environment.
+
+Precedence is deliberate and visible:
+
+| Where the value is | What wins | What the admin screen shows |
+|---|---|---|
+| Environment variable is set | The environment | Field locked, naming the variable |
+| Not set, saved in the app | The saved value | Editable, marked "Set here" |
+| Neither | The built-in default | Editable, marked "Built-in default" |
+
+Pinning a value in your environment therefore makes it authoritative, and the
+UI refuses the edit rather than storing something the reader would never see.
+Remove the variable to hand control back to the admin screen. Every change is
+recorded in the audit log with the value it replaced.
+
+Changing the organization name is not retroactive. A published revision keeps
+the name it carried at publication because its rendered artifacts are
+immutable. Drafts pick up the new value the next time they render.
+
 ## People, teams and access
 
 `Admin → People` and `Admin → Teams` manage accounts and membership.

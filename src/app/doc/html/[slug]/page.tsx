@@ -6,6 +6,7 @@ import { db } from '#src/db/index.ts';
 import { groupMembers, people } from '#src/db/schema.ts';
 import { isAppError } from '#src/domain/errors.ts';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { RENDER_PREFS_COOKIE, parseRenderPrefsCookie } from '#src/lib/prefs.ts';
 import { InfoPanel } from '#src/components/reader/InfoPanel.tsx';
 import { ReaderShell } from '#src/components/reader/ReaderShell.tsx';
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ReaderPage({ params }: PageProps) {
   const { slug } = await params;
   const actor = await getActor();
+  const { brandName, bugReportUrl } = await settingValues();
 
   let target;
   try {
@@ -97,7 +99,7 @@ export default async function ReaderPage({ params }: PageProps) {
 
   return (
     <ReaderShell
-      brandName={config.app.brandName}
+      brandName={brandName}
       documentLabel={doc.documentNumber ?? doc.slug}
       documentHref={`/doc/${doc.slug}`}
       statusLabel={`${labelForType(doc.type)} — ${labelForStatus(doc.status)}`}
@@ -107,9 +109,10 @@ export default async function ReaderPage({ params }: PageProps) {
       htmlAvailable={artifactRows.some((a) => a.format === 'html')}
       activeHtmlization={render.mode}
       activeCitationMode={renderPrefs.citationLinks}
-      bugReportUrl={config.app.bugReportUrl}
+      bugReportUrl={bugReportUrl}
       info={
         <InfoPanel
+          bugReportUrl={bugReportUrl}
           documentSlug={doc.slug}
           documentLabel={doc.documentNumber ?? doc.slug}
           documentType={labelForType(doc.type)}

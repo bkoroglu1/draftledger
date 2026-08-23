@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { config } from '#src/lib/config.ts';
+import { settingValues } from '#src/services/settings.ts';
 import { AppBar } from '#src/components/AppBar.tsx';
 import { getActor } from '#src/services/auth.ts';
 import { searchDocuments } from '#src/services/documents.ts';
@@ -26,6 +27,7 @@ export default async function HomePage({
 }) {
   const sp = await searchParams;
   const actor = await getActor();
+  const { brandName } = await settingValues();
 
   const { items, total } = await searchDocuments(
     {
@@ -43,7 +45,7 @@ export default async function HomePage({
     <>
       <AppBar actor={actor} />
       <div className="dl-app">
-        <h1 className="dl-page-title">{config.app.brandName}</h1>
+        <h1 className="dl-page-title">{brandName}</h1>
         <p className="dl-page-subtitle">
           Local standards, drafts and imported references in the{' '}
           {config.documents.defaultNamespace} namespace.

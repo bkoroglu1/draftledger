@@ -29,6 +29,13 @@
       "when": 1787082531442,
       "tag": "0003_credential_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1787082532442,
+      "tag": "0004_settings",
+      "breakpoints": true
     }
   ]
 }

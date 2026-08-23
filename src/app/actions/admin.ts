@@ -10,6 +10,7 @@ import { recordAudit } from '#src/services/audit.ts';
 import { expandRecipients, namespaceKeyFor } from '#src/services/notifications.ts';
 import { getDocumentContext } from '#src/services/documents.ts';
 import { assertAdmin } from '#src/services/rbac.ts';
+import { SETTING_DEFINITIONS, saveSettings, type SettingKey } from '#src/services/settings.ts';
 
 type State = { error?: string; message?: string; preview?: string } | null;
 
@@ -219,5 +220,38 @@ export async function deleteTemplateAction(_prev: State, formData: FormData): Pr
     return { message: `Deleted the ${existing.name} template.` };
   } catch (err) {
     return { error: isAppError(err) ? err.message : 'Could not delete the template.' };
+  }
+}
+
+/**
+ * Installation settings. Values pinned by an environment variable are refused
+ * by the service rather than stored, so a disabled field that somehow gets
+ * submitted cannot leave a value in the database that nothing ever reads.
+ */
+export async function saveSettingsAction(_prev: State, formData: FormData): Promise<State> {
+  try {
+    const actor = await requireActor();
+    assertAdmin(actor);
+
+    const input: Partial<Record<SettingKey, string>> = {};
+    for (const def of SETTING_DEFINITIONS) {
+      const raw = formData.get(def.key);
+      if (raw !== null) input[def.key] = String(raw);
+    }
+
+    const { changed, rejected } = await saveSettings(actor, input);
+    if (rejected.length) {
+      return { error: rejected.map((r) => `${r.key}: ${r.reason}`).join('. ') };
+    }
+
+    revalidatePath('/', 'layout');
+    return {
+      message: changed.length
+        ? `Saved ${changed.length} setting${changed.length === 1 ? '' : 's'}.`
+        : 'No changes to save.',
+    };
+  } catch (err) {
+    if (isAppError(err)) return { error: err.message };
+    throw err;
   }
 }

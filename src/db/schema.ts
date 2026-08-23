@@ -71,6 +71,18 @@ export const sessions = pgTable(
  * Single-use invite and password-reset tokens. Only the hash is stored, so a
  * database dump cannot be turned into a working link.
  */
+/**
+ * Installation settings an administrator can change from the UI. Presentation
+ * values only. Secrets stay in the environment, and an explicitly set
+ * environment variable still wins over anything stored here.
+ */
+export const settings = pgTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  updatedBy: uuid('updated_by').references(() => people.id, { onDelete: 'set null' }),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const credentialTokens = pgTable(
   'credential_tokens',
   {
