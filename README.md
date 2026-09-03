@@ -319,6 +319,7 @@ empty, and `db:reset` refuses to run without an explicit confirmation variable.
 - [SECURITY.md](SECURITY.md) — RBAC, draft confidentiality, approval integrity,
   sanitization and the upstream-fetch threat model.
 - [LICENSES.md](LICENSES.md) — third-party dependencies and attribution.
+- [CHANGELOG.md](CHANGELOG.md) contains the release history.
 - `docs/screenshots/` — captured interface screenshots
   (`node scripts/screenshots.mjs http://localhost:3000` regenerates them).
 
