@@ -57,17 +57,17 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
-    "@types/node": "^24.13.3",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.5.0",
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.15.6",
     "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
+    "@types/react-dom": "^19.2.7",
     "drizzle-kit": "^0.31.10",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "^16.3.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.11"
+    "eslint": "^10.10.0",
+    "eslint-config-next": "^16.3.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
   },
   "allowScripts": {
     "esbuild@0.18.20": true,
