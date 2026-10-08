@@ -47,22 +47,22 @@
     "verify": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.2",
-    "next": "^16.3.1",
-    "nodemailer": "^9.0.5",
-    "pg": "^8.23.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "drizzle-orm": "^0.45.3",
+    "next": "^16.3.8",
+    "nodemailer": "^10.0.15",
+    "pg": "^8.23.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "server-only": "^0.0.1",
-    "zod": "^4.4.3"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "@types/node": "^24.13.3",
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.15.6",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.3.1",
